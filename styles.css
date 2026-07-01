@@ -86,12 +86,23 @@ h1 {
 .today-chip {
   display: grid;
   gap: 3px;
-  min-width: 150px;
+  min-width: 280px;
   padding: 10px 13px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
   box-shadow: var(--shadow);
+}
+
+.today-chip button {
+  justify-self: start;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--leaf);
+  border-radius: 8px;
+  color: #fff;
+  background: var(--leaf);
+  cursor: pointer;
 }
 
 .today-chip span,
@@ -173,6 +184,11 @@ h1 {
   background: var(--leaf);
 }
 
+.affairs-switcher {
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
 .nav-pill,
 .room-action {
   min-height: 34px;
@@ -195,7 +211,8 @@ h1 {
 .home-mode .persona-rail,
 .home-mode .insight-panel,
 .home-mode .main-stage > .section-title,
-.home-mode .today-chip {
+.home-mode .today-chip,
+.home-mode .affairs-switcher {
   display: none;
 }
 
@@ -207,6 +224,15 @@ h1 {
   padding: 0;
   border: 0;
   background: transparent;
+}
+
+.affairs-mode .persona-rail,
+.affairs-mode .main-stage > .section-title {
+  display: none;
+}
+
+.affairs-mode .workspace {
+  grid-template-columns: minmax(0, 1fr) 300px;
 }
 
 .persona-rail,
@@ -336,6 +362,11 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 12px;
+}
+
+.room-grid[hidden],
+.project-grid[hidden] {
+  display: none;
 }
 
 .home-mode .room-grid {

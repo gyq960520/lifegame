@@ -186,7 +186,10 @@ function horizonLabel(horizon) {
 }
 
 function renderStats() {
-  document.querySelector("#personaCount").textContent = personas.length;
+  const personaCount = document.querySelector("#personaCount");
+  if (!personaCount) return;
+
+  personaCount.textContent = personas.length;
   document.querySelector("#projectCount").textContent = projects.length;
   document.querySelector("#shortCount").textContent = projects.filter(
     (project) => project.horizon === "short",
@@ -518,10 +521,9 @@ function renderQuestions() {
 function renderRooms() {
   const inHall = state.view === "hall";
   hallRoomGrid.hidden = !inHall;
-  affairsRoom.hidden = inHall;
+  affairsRoom.hidden = true;
 
   if (!inHall) {
-    renderAffairsRoom();
     return;
   }
 
@@ -529,16 +531,6 @@ function renderRooms() {
   renderCouncilRoom();
   renderNpcEchoRoom();
   renderRecentRoom();
-}
-
-function renderAffairsRoom() {
-  const selectedPersona = personas.find((persona) => persona.id === state.personaId);
-  if (!selectedPersona) return;
-
-  const personaProjects = projects.filter((project) => project.personaId === selectedPersona.id);
-  document.querySelector("#personaRoomTitle").textContent = selectedPersona.name;
-  document.querySelector("#personaRoomPurpose").textContent = selectedPersona.purpose;
-  document.querySelector("#personaProjectCount").textContent = personaProjects.length;
 }
 
 function renderCouncilRoom() {
@@ -840,7 +832,7 @@ document.addEventListener("change", (event) => {
 });
 
 document.querySelector("#resetPersona").addEventListener("click", enterHall);
-document.querySelector("#enterAffairsTop").addEventListener("click", () => enterAffairs());
+document.querySelector("#returnHomeTop").addEventListener("click", enterHall);
 document.querySelector("[data-enter-affairs]").addEventListener("click", () => enterAffairs());
 document.querySelector("#clearDraft").addEventListener("click", () => {
   captureText.value = "";
