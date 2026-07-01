@@ -116,6 +116,7 @@ const seedProjects = [
 const storageKeys = {
   projects: "lifegame.projects.v1",
   journal: "lifegame.journal.v1",
+  ui: "lifegame.ui.v1",
 };
 
 let projects = sanitizeProjects(loadFromStorage(storageKeys.projects, seedProjects));
@@ -131,11 +132,13 @@ const fallbackQuestions = [
   { label: "边界问题", text: "哪个人格正在接管太多注意力？" },
 ];
 
-const state = {
+const state = normalizeUiState(
+  loadFromStorage(storageKeys.ui, {
   view: "hall",
   personaId: "all",
   horizon: "mid",
-};
+  }),
+);
 
 const personaList = document.querySelector("#personaList");
 const railTitle = document.querySelector("#railTitle");
@@ -672,9 +675,23 @@ function normalizeQuestion(text) {
     .slice(0, 48);
 }
 
+function normalizeUiState(uiState) {
+  const validPersonaIds = new Set(personas.map((persona) => persona.id));
+  const view = uiState.view === "affairs" ? "affairs" : "hall";
+  const personaId =
+    view === "affairs" && validPersonaIds.has(uiState.personaId) ? uiState.personaId : "all";
+  const horizon = ["mid", "long"].includes(uiState.horizon) ? uiState.horizon : "mid";
+  return { view, personaId, horizon };
+}
+
+function saveUiState() {
+  saveToStorage(storageKeys.ui, state);
+}
+
 function setPersona(personaId) {
   state.view = "affairs";
   state.personaId = personaId;
+  saveUiState();
   syncCapturePersona();
   renderPersonas();
   renderProjects();
@@ -689,6 +706,7 @@ function enterAffairs(personaId = state.personaId === "all" ? "ceo" : state.pers
 function enterHall() {
   state.view = "hall";
   state.personaId = "all";
+  saveUiState();
   syncCapturePersona();
   renderPersonas();
   renderProjects();
@@ -708,6 +726,7 @@ function syncCapturePersona() {
 
 function setHorizon(horizon) {
   state.horizon = horizon;
+  saveUiState();
   document.querySelectorAll("[data-horizon]").forEach((button) => {
     button.classList.toggle("active", button.dataset.horizon === horizon);
   });
