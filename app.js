@@ -144,6 +144,7 @@ const questionList = document.querySelector("#questionList");
 const councilList = document.querySelector("#councilList");
 const npcEchoList = document.querySelector("#npcEchoList");
 const recentEntryList = document.querySelector("#recentEntryList");
+const currentViewLabel = document.querySelector("#currentViewLabel");
 const stageTitle = document.querySelector("#stageTitle");
 const journalStack = document.querySelector("#journalStack");
 const captureForm = document.querySelector("#captureForm");
@@ -232,6 +233,15 @@ function filteredProjects() {
 function renderProjects() {
   const selectedPersona = personas.find((persona) => persona.id === state.personaId);
   stageTitle.textContent = selectedPersona ? selectedPersona.nickname : "游戏看板";
+  currentViewLabel.textContent = selectedPersona ? selectedPersona.name : "总控";
+
+  if (!selectedPersona) {
+    projectGrid.innerHTML = "";
+    projectGrid.hidden = true;
+    return;
+  }
+
+  projectGrid.hidden = false;
 
   const cards = filteredProjects();
   if (cards.length === 0) {
