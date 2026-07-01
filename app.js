@@ -134,7 +134,7 @@ const fallbackQuestions = [
 const state = {
   view: "hall",
   personaId: "all",
-  horizon: "all",
+  horizon: "mid",
 };
 
 const personaList = document.querySelector("#personaList");
@@ -237,7 +237,7 @@ function renderCapturePersonaOptions() {
 function filteredProjects() {
   return projects.filter((project) => {
     const personaMatch = state.personaId === "all" || project.personaId === state.personaId;
-    const horizonMatch = state.horizon === "all" || project.horizon === state.horizon;
+    const horizonMatch = ["mid", "long"].includes(project.horizon) && project.horizon === state.horizon;
     return personaMatch && horizonMatch;
   });
 }
@@ -267,17 +267,33 @@ function renderProjects() {
   const cards = filteredProjects();
   if (cards.length === 0) {
     projectGrid.innerHTML = `
-      <div class="project-section-title">人格项目</div>
-      <div class="empty-state">
-        这个视角暂时没有项目。可以换个时间范围，或者给这个人格补一个下一步。
-      </div>
+      <section class="project-board">
+        <div class="project-board-head">
+          <span>人格项目</span>
+          <div class="segmented" aria-label="项目时间视角">
+            <button class="${state.horizon === "mid" ? "active" : ""}" data-horizon="mid">中期</button>
+            <button class="${state.horizon === "long" ? "active" : ""}" data-horizon="long">长期</button>
+          </div>
+        </div>
+        <div class="empty-state">
+          这个人格暂时没有${horizonLabel(state.horizon)}项目。
+        </div>
+      </section>
     `;
     return;
   }
 
   projectGrid.innerHTML = `
-    <div class="project-section-title">人格项目</div>
-    ${cards
+    <section class="project-board">
+      <div class="project-board-head">
+        <span>人格项目</span>
+        <div class="segmented" aria-label="项目时间视角">
+          <button class="${state.horizon === "mid" ? "active" : ""}" data-horizon="mid">中期</button>
+          <button class="${state.horizon === "long" ? "active" : ""}" data-horizon="long">长期</button>
+        </div>
+      </div>
+      <div class="project-card-grid">
+        ${cards
     .map(
       (project) => {
         const isEditing = editingProjectId === project.id;
@@ -324,6 +340,8 @@ function renderProjects() {
       },
     )
     .join("")}
+      </div>
+    </section>
   `;
 }
 
