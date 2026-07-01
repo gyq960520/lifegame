@@ -456,6 +456,18 @@ function captureTypeLabel(type) {
   return captureTypes.find((item) => item.value === type)?.label ?? "记录";
 }
 
+function routeEntryType(entry, type) {
+  const routedEntry = { ...entry, type };
+  if (type === "task") {
+    return { ...routedEntry, bucket: routedEntry.bucket ?? "today" };
+  }
+  if (routedEntry.bucket === "today") {
+    delete routedEntry.bucket;
+    delete routedEntry.sourceProjectId;
+  }
+  return routedEntry;
+}
+
 const captureTypes = [
   { value: "diary", label: "思考" },
   { value: "task", label: "任务" },
@@ -468,7 +480,7 @@ const captureTypes = [
 function classifyCapture(text, npcName) {
   const content = text.toLowerCase();
   if (npcName || detectNpcName(text)) return "influence";
-  if (/(测试|test|随便问问|试一下|hello|hi)/i.test(text)) return "noise";
+  if (/(测试一下|试一下|test|随便问问|hello|hi)/i.test(text)) return "noise";
   if (/[?？]$/.test(text.trim()) || /(怎么|为什么|要不要|是否|能不能|该不该|如何)/.test(text)) {
     return "question";
   }
@@ -785,7 +797,7 @@ document.addEventListener("click", (event) => {
   const flowButton = event.target.closest("[data-flow-entry]");
   if (flowButton) {
     journalEntries = journalEntries.map((entry) =>
-      entry.id === flowButton.dataset.flowEntry ? { ...entry, type: flowButton.dataset.flowType } : entry,
+      entry.id === flowButton.dataset.flowEntry ? routeEntryType(entry, flowButton.dataset.flowType) : entry,
     );
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
@@ -861,7 +873,7 @@ document.addEventListener("change", (event) => {
   if (!typeSelect) return;
 
   journalEntries = journalEntries.map((entry) =>
-    entry.id === typeSelect.dataset.entryType ? { ...entry, type: typeSelect.value } : entry,
+    entry.id === typeSelect.dataset.entryType ? routeEntryType(entry, typeSelect.value) : entry,
   );
   saveToStorage(storageKeys.journal, journalEntries);
   renderJournal();
@@ -885,10 +897,12 @@ captureForm.addEventListener("submit", (event) => {
     return;
   }
   const detectedNpcName = detectNpcName(text);
+  const type = classifyCapture(text, detectedNpcName);
 
   journalEntries.push({
     id: crypto.randomUUID(),
-    type: classifyCapture(text, detectedNpcName),
+    type,
+    ...(type === "task" ? { bucket: "today" } : {}),
     personaId: capturePersona.value,
     npcName: detectedNpcName,
     text,
