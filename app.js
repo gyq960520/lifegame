@@ -411,17 +411,18 @@ function renderTodayView() {
 }
 
 function renderJournal() {
-  if (journalEntries.length === 0) {
+  const entries = visibleEntries();
+  if (entries.length === 0) {
     journalStack.innerHTML = `
       <article class="journal-empty">
         <span>等待输入</span>
-        <strong>这里会显示刚刚整理好的思绪。</strong>
+        <strong>${state.personaId === "all" ? "这里会显示刚刚整理好的思绪。" : `${personaName(state.personaId)}还没有刚整理的思绪。`}</strong>
       </article>
     `;
     return;
   }
 
-  journalStack.innerHTML = journalEntries
+  journalStack.innerHTML = entries
     .slice()
     .reverse()
     .slice(0, 4)
