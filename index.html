@@ -53,7 +53,7 @@
 
           <section class="main-stage">
             <div class="section-title">
-              <span id="stageTitle">今日总览</span>
+              <span id="stageTitle">游戏看板</span>
               <div class="segmented" aria-label="时间视角">
                 <button class="active" data-horizon="all">全部</button>
                 <button data-horizon="short">短期</button>
@@ -62,6 +62,36 @@
               </div>
             </div>
             <div id="todayView" class="today-view"></div>
+            <div class="room-grid">
+              <section class="room-panel">
+                <div class="room-title">
+                  <span>总控议事厅</span>
+                  <strong id="councilCount">0</strong>
+                </div>
+                <div id="councilList" class="room-list"></div>
+              </section>
+              <section class="room-panel">
+                <div class="room-title">
+                  <span>问题之海</span>
+                  <strong id="questionCount">0</strong>
+                </div>
+                <div id="questionList" class="question-list"></div>
+              </section>
+              <section class="room-panel">
+                <div class="room-title">
+                  <span>NPC 回声</span>
+                  <strong id="npcEchoCount">0</strong>
+                </div>
+                <div id="npcEchoList" class="room-list"></div>
+              </section>
+              <section class="room-panel">
+                <div class="room-title">
+                  <span>最近收纳</span>
+                  <strong id="recentEntryCount">0</strong>
+                </div>
+                <div id="recentEntryList" class="room-list"></div>
+              </section>
+            </div>
             <div id="projectGrid" class="project-grid"></div>
           </section>
 
@@ -83,19 +113,14 @@
             </form>
 
             <div class="section-title compact">
-              <span>思考记录</span>
+              <span>近期收纳</span>
             </div>
             <div id="journalStack" class="journal-stack"></div>
-
-            <div class="section-title compact">
-              <span>问题地图</span>
-            </div>
-            <div id="questionList" class="question-list"></div>
           </aside>
         </section>
       </main>
     </div>
 
-    <script src="./app.js?v=20260701-journal-actions"></script>
+    <script src="./app.js?v=20260701-game-rooms"></script>
   </body>
 </html>

@@ -243,6 +243,7 @@ h1 {
 .today-view,
 .journal-stack,
 .question-list,
+.room-list,
 .capture-form {
   display: grid;
   gap: 10px;
@@ -286,6 +287,75 @@ h1 {
 
 .project-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.project-section-title {
+  grid-column: 1 / -1;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.room-panel {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 190px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.room-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.room-title span {
+  font-weight: 800;
+}
+
+.room-title strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  color: var(--leaf);
+  background: rgba(216, 240, 223, 0.8);
+  font-size: 12px;
+}
+
+.room-item {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fbfaf6;
+}
+
+.room-item span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.room-item strong {
+  line-height: 1.42;
+}
+
+.room-item.seed {
+  color: var(--muted);
 }
 
 .today-view {
@@ -625,7 +695,8 @@ h1 {
 
   .workspace,
   .today-view,
-  .project-grid {
+  .project-grid,
+  .room-grid {
     grid-template-columns: 1fr;
   }
 

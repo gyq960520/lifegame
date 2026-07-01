@@ -1,4 +1,4 @@
-const personas = [
+﻿const personas = [
   {
     id: "ceo",
     name: "总控本人",
@@ -141,6 +141,9 @@ const quickPersonaList = document.querySelector("#quickPersonaList");
 const projectGrid = document.querySelector("#projectGrid");
 const todayView = document.querySelector("#todayView");
 const questionList = document.querySelector("#questionList");
+const councilList = document.querySelector("#councilList");
+const npcEchoList = document.querySelector("#npcEchoList");
+const recentEntryList = document.querySelector("#recentEntryList");
 const stageTitle = document.querySelector("#stageTitle");
 const journalStack = document.querySelector("#journalStack");
 const captureForm = document.querySelector("#captureForm");
@@ -228,11 +231,12 @@ function filteredProjects() {
 
 function renderProjects() {
   const selectedPersona = personas.find((persona) => persona.id === state.personaId);
-  stageTitle.textContent = selectedPersona ? selectedPersona.nickname : "今日总览";
+  stageTitle.textContent = selectedPersona ? selectedPersona.nickname : "游戏看板";
 
   const cards = filteredProjects();
   if (cards.length === 0) {
     projectGrid.innerHTML = `
+      <div class="project-section-title">人格项目</div>
       <div class="empty-state">
         这个视角暂时没有项目。可以换个时间范围，或者给这个人格补一个下一步。
       </div>
@@ -240,7 +244,9 @@ function renderProjects() {
     return;
   }
 
-  projectGrid.innerHTML = cards
+  projectGrid.innerHTML = `
+    <div class="project-section-title">人格项目</div>
+    ${cards
     .map(
       (project) => {
         const isEditing = editingProjectId === project.id;
@@ -286,7 +292,8 @@ function renderProjects() {
       `;
       },
     )
-    .join("");
+    .join("")}
+  `;
 }
 
 function renderTodayView() {
@@ -358,6 +365,7 @@ function renderJournal() {
   journalStack.innerHTML = journalEntries
     .slice()
     .reverse()
+    .slice(0, 4)
     .map(
       (entry) => `
         <article class="${entry.type === "noise" ? "noise" : ""} ${entry.processed ? "processed" : ""}">
@@ -383,18 +391,7 @@ function renderJournal() {
             </label>
           </div>
           <div class="entry-footer">
-            <button class="done" data-mark-processed="${entry.id}">${entry.processed ? "取消处理" : "已处理"}</button>
-            <details class="flow-menu">
-              <summary>更多</summary>
-              <div class="flow-actions">
-                <button data-flow-type="task" data-flow-entry="${entry.id}">转任务</button>
-                <button data-flow-type="judgment" data-flow-entry="${entry.id}">转判断</button>
-                <button data-flow-type="question" data-flow-entry="${entry.id}">转问题</button>
-                <button data-flow-type="influence" data-flow-entry="${entry.id}">外部影响</button>
-                <button data-flow-type="noise" data-flow-entry="${entry.id}">噪音</button>
-                <button data-set-next="${entry.id}">设为项目下一步</button>
-              </div>
-            </details>
+            <button class="done" data-mark-processed="${entry.id}">${entry.processed ? "取消处理" : "已收纳"}</button>
           </div>
         </article>
       `,
@@ -445,6 +442,7 @@ function detectNpcName(text) {
 
 function renderQuestions() {
   const questions = buildQuestionMap();
+  document.querySelector("#questionCount").textContent = questions.length;
 
   if (questions.length === 0) {
     questionList.innerHTML = fallbackQuestions
@@ -466,19 +464,92 @@ function renderQuestions() {
         <article class="question-item">
           <span>${question.label} / ${question.count} 次 / ${question.personas}</span>
           <strong>${question.text}</strong>
-          <p>${question.latest}</p>
+          ${question.latest !== question.text ? `<p>${question.latest}</p>` : ""}
         </article>
       `,
     )
     .join("");
 }
 
+function renderRooms() {
+  renderQuestions();
+  renderCouncilRoom();
+  renderNpcEchoRoom();
+  renderRecentRoom();
+}
+
+function renderCouncilRoom() {
+  const judgments = visibleEntries()
+    .filter((entry) => entry.type === "judgment")
+    .slice()
+    .reverse()
+    .slice(0, 4);
+
+  document.querySelector("#councilCount").textContent = judgments.length;
+  councilList.innerHTML =
+    judgments
+      .map(
+        (entry) => `
+          <article class="room-item">
+            <span>${personaName(entry.personaId)} / ${entry.createdAt}</span>
+            <strong>${entry.text}</strong>
+          </article>
+        `,
+      )
+      .join("") || `<article class="room-item seed"><strong>暂时没有需要总控拍板的判断。</strong></article>`;
+}
+
+function renderNpcEchoRoom() {
+  const echoes = visibleEntries()
+    .filter((entry) => entry.type === "influence")
+    .slice()
+    .reverse()
+    .slice(0, 4);
+
+  document.querySelector("#npcEchoCount").textContent = echoes.length;
+  npcEchoList.innerHTML =
+    echoes
+      .map(
+        (entry) => `
+          <article class="room-item">
+            <span>${entry.npcName ? `NPC: ${entry.npcName}` : personaName(entry.personaId)} / ${entry.createdAt}</span>
+            <strong>${entry.text}</strong>
+          </article>
+        `,
+      )
+      .join("") || `<article class="room-item seed"><strong>暂时没有外部输入影响你。</strong></article>`;
+}
+
+function renderRecentRoom() {
+  const recentEntries = visibleEntries()
+    .filter((entry) => entry.type !== "noise")
+    .slice()
+    .reverse()
+    .slice(0, 5);
+
+  document.querySelector("#recentEntryCount").textContent = recentEntries.length;
+  recentEntryList.innerHTML =
+    recentEntries
+      .map(
+        (entry) => `
+          <article class="room-item">
+            <span>${captureTypeLabel(entry.type)} / ${personaName(entry.personaId)} / ${entry.createdAt}</span>
+            <strong>${entry.text}</strong>
+          </article>
+        `,
+      )
+      .join("") || `<article class="room-item seed"><strong>新的思考会先落在这里，再去各个房间沉淀。</strong></article>`;
+}
+
+function visibleEntries() {
+  return journalEntries.filter((entry) => state.personaId === "all" || entry.personaId === state.personaId);
+}
+
 function buildQuestionMap() {
   const groups = new Map();
 
-  journalEntries
+  visibleEntries()
     .filter((entry) => entry.type !== "noise")
-    .filter((entry) => state.personaId === "all" || entry.personaId === state.personaId)
     .filter((entry) => entry.type === "question" || isQuestionLike(entry.text))
     .forEach((entry) => {
       const questionText = extractQuestionText(entry.text);
@@ -538,7 +609,7 @@ function setPersona(personaId) {
   renderPersonas();
   renderProjects();
   renderTodayView();
-  renderQuestions();
+  renderRooms();
 }
 
 function setHorizon(horizon) {
@@ -595,7 +666,7 @@ document.addEventListener("click", (event) => {
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
     renderTodayView();
-    renderQuestions();
+    renderRooms();
   }
 
   const flowButton = event.target.closest("[data-flow-entry]");
@@ -606,7 +677,7 @@ document.addEventListener("click", (event) => {
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
     renderTodayView();
-    renderQuestions();
+    renderRooms();
   }
 
   const processedButton = event.target.closest("[data-mark-processed]");
@@ -619,7 +690,7 @@ document.addEventListener("click", (event) => {
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
     renderTodayView();
-    renderQuestions();
+    renderRooms();
   }
 
   const setNextButton = event.target.closest("[data-set-next]");
@@ -638,7 +709,7 @@ document.addEventListener("click", (event) => {
     renderProjects();
     renderJournal();
     renderTodayView();
-    renderQuestions();
+    renderRooms();
   }
 
   const createTodoButton = event.target.closest("[data-create-todo-from-project]");
@@ -662,7 +733,7 @@ document.addEventListener("click", (event) => {
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
     renderTodayView();
-    renderQuestions();
+    renderRooms();
   }
 });
 
@@ -676,7 +747,7 @@ document.addEventListener("change", (event) => {
   saveToStorage(storageKeys.journal, journalEntries);
   renderJournal();
   renderTodayView();
-  renderQuestions();
+  renderRooms();
 });
 
 document.querySelector("#resetPersona").addEventListener("click", () => setPersona("all"));
@@ -711,7 +782,7 @@ captureForm.addEventListener("submit", (event) => {
   captureText.value = "";
   renderJournal();
   renderTodayView();
-  renderQuestions();
+  renderRooms();
 });
 
 renderStats();
@@ -720,4 +791,4 @@ renderPersonas();
 renderProjects();
 renderTodayView();
 renderJournal();
-renderQuestions();
+renderRooms();
