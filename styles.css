@@ -191,6 +191,24 @@ h1 {
   align-items: start;
 }
 
+.home-mode .today-panel,
+.home-mode .persona-rail,
+.home-mode .insight-panel,
+.home-mode .main-stage > .section-title,
+.home-mode .today-chip {
+  display: none;
+}
+
+.home-mode .workspace {
+  grid-template-columns: 1fr;
+}
+
+.home-mode .main-stage {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
 .persona-rail,
 .main-stage,
 .insight-panel {
@@ -320,6 +338,11 @@ h1 {
   margin-bottom: 12px;
 }
 
+.home-mode .room-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .persona-room {
   display: grid;
   gap: 10px;
@@ -344,6 +367,19 @@ h1 {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
+}
+
+.home-mode .room-panel {
+  min-height: 230px;
+}
+
+.hall-card-action {
+  cursor: pointer;
+}
+
+.hall-card-action:hover {
+  border-color: rgba(64, 125, 85, 0.5);
+  box-shadow: 0 14px 30px rgba(54, 59, 53, 0.10);
 }
 
 .persona-overview {

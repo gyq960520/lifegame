@@ -21,14 +21,14 @@
         </div>
         <div class="today-chip">
           <span>当前视角</span>
-          <strong id="currentViewLabel">大厅</strong>
+          <strong id="currentViewLabel">今日事务</strong>
         </div>
       </header>
 
       <main class="dashboard">
         <section class="today-panel">
           <div class="today-copy">
-            <p class="eyebrow">lifegame 大厅</p>
+            <p class="eyebrow">今日事务</p>
             <h2>先看清今天怎么玩，再决定怎么提效。</h2>
           </div>
           <div class="today-actions">
@@ -38,7 +38,7 @@
               <span><strong id="shortCount">0</strong> 短期</span>
               <span><strong id="futureCount">0</strong> 中长期</span>
             </div>
-            <button id="enterAffairsTop" class="nav-pill">进入今日事务</button>
+            <button id="enterAffairsTop" class="nav-pill">今日关卡</button>
           </div>
         </section>
 
@@ -48,24 +48,12 @@
               <span id="railTitle">大厅</span>
               <button id="resetPersona" title="回到大厅">大厅</button>
             </div>
-            <div id="hallRail" class="persona-list">
-              <button class="persona-card active" type="button">
-                <span>EGO CEO</span>
-                <strong>EGO 很大的 CEO</strong>
-                <span>只看全局，不微操。</span>
-              </button>
-              <button id="enterAffairsRail" class="persona-card" type="button">
-                <span>入口</span>
-                <strong>今日事务</strong>
-                <span>进入 6 个人格的当日工作台。</span>
-              </button>
-            </div>
             <div id="personaList" class="persona-list"></div>
           </aside>
 
           <section class="main-stage">
             <div class="section-title">
-              <span id="stageTitle">大厅</span>
+              <span id="stageTitle">今日事务</span>
               <div class="segmented" aria-label="时间视角">
                 <button class="active" data-horizon="all">全部</button>
                 <button data-horizon="short">短期</button>
@@ -75,16 +63,14 @@
             </div>
             <div id="todayView" class="today-view"></div>
             <div id="hallRoomGrid" class="room-grid">
-              <section class="room-panel">
+              <section class="room-panel hall-card-action" data-enter-affairs>
                 <div class="room-title">
                   <span>今日关卡</span>
                   <strong id="hallAffairsCount">6</strong>
                 </div>
                 <div class="room-list">
                   <article class="room-item">
-                    <span>入口</span>
                     <strong>进入 6 个人格的今日事务。</strong>
-                    <button id="enterAffairsRoom" class="room-action" type="button">进入今日事务</button>
                   </article>
                 </div>
               </section>
@@ -156,6 +142,6 @@
       </main>
     </div>
 
-    <script src="./app.js?v=20260701-hall-affairs"></script>
+    <script src="./app.js?v=20260701-home-cards"></script>
   </body>
 </html>

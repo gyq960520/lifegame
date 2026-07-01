@@ -138,7 +138,6 @@ const state = {
 };
 
 const personaList = document.querySelector("#personaList");
-const hallRail = document.querySelector("#hallRail");
 const railTitle = document.querySelector("#railTitle");
 const affairsPersonaList = document.querySelector("#affairsPersonaList");
 const projectGrid = document.querySelector("#projectGrid");
@@ -200,7 +199,6 @@ function renderStats() {
 function renderPersonas() {
   const inAffairs = state.view === "affairs";
   railTitle.textContent = inAffairs ? "今日事务" : "大厅";
-  hallRail.hidden = inAffairs;
   personaList.hidden = !inAffairs;
 
   personaList.innerHTML = personas
@@ -243,6 +241,7 @@ function filteredProjects() {
 
 function renderProjects() {
   const selectedPersona = personas.find((persona) => persona.id === state.personaId);
+  renderLayoutMode();
   if (state.view === "hall") {
     stageTitle.textContent = "大厅";
     currentViewLabel.textContent = "大厅";
@@ -692,6 +691,11 @@ function enterHall() {
   renderRooms();
 }
 
+function renderLayoutMode() {
+  document.body.classList.toggle("home-mode", state.view === "hall");
+  document.body.classList.toggle("affairs-mode", state.view === "affairs");
+}
+
 function syncCapturePersona() {
   if (!capturePersona) return;
   capturePersona.value = state.personaId === "all" ? "ceo" : state.personaId;
@@ -837,8 +841,7 @@ document.addEventListener("change", (event) => {
 
 document.querySelector("#resetPersona").addEventListener("click", enterHall);
 document.querySelector("#enterAffairsTop").addEventListener("click", () => enterAffairs());
-document.querySelector("#enterAffairsRail").addEventListener("click", () => enterAffairs());
-document.querySelector("#enterAffairsRoom").addEventListener("click", () => enterAffairs());
+document.querySelector("[data-enter-affairs]").addEventListener("click", () => enterAffairs());
 document.querySelector("#clearDraft").addEventListener("click", () => {
   captureText.value = "";
   captureText.focus();
