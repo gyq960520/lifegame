@@ -382,14 +382,19 @@ function renderJournal() {
               </select>
             </label>
           </div>
-          <div class="flow-actions">
-            <button data-flow-type="task" data-flow-entry="${entry.id}">转任务</button>
-            <button data-flow-type="judgment" data-flow-entry="${entry.id}">转判断</button>
-            <button data-flow-type="question" data-flow-entry="${entry.id}">转问题</button>
-            <button data-flow-type="influence" data-flow-entry="${entry.id}">外部影响</button>
-            <button data-flow-type="noise" data-flow-entry="${entry.id}">噪音</button>
+          <div class="entry-footer">
             <button class="done" data-mark-processed="${entry.id}">${entry.processed ? "取消处理" : "已处理"}</button>
-            <button data-set-next="${entry.id}">设为项目下一步</button>
+            <details class="flow-menu">
+              <summary>更多</summary>
+              <div class="flow-actions">
+                <button data-flow-type="task" data-flow-entry="${entry.id}">转任务</button>
+                <button data-flow-type="judgment" data-flow-entry="${entry.id}">转判断</button>
+                <button data-flow-type="question" data-flow-entry="${entry.id}">转问题</button>
+                <button data-flow-type="influence" data-flow-entry="${entry.id}">外部影响</button>
+                <button data-flow-type="noise" data-flow-entry="${entry.id}">噪音</button>
+                <button data-set-next="${entry.id}">设为项目下一步</button>
+              </div>
+            </details>
           </div>
         </article>
       `,

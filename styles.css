@@ -480,6 +480,13 @@ h1 {
   gap: 6px;
 }
 
+.entry-footer {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .flow-actions {
   display: flex;
   flex-wrap: wrap;
@@ -497,7 +504,8 @@ h1 {
   font-size: 12px;
 }
 
-.flow-actions button {
+.entry-footer button,
+.flow-menu summary {
   min-height: 28px;
   padding: 0 8px;
   border: 1px solid var(--line);
@@ -508,10 +516,38 @@ h1 {
   font-size: 12px;
 }
 
-.flow-actions button.done {
+.entry-footer button.done {
   color: #fff;
   border-color: var(--leaf);
   background: var(--leaf);
+}
+
+.flow-menu {
+  position: relative;
+}
+
+.flow-menu summary {
+  display: inline-flex;
+  align-items: center;
+  list-style: none;
+}
+
+.flow-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.flow-menu[open] summary {
+  color: var(--leaf);
+  border-color: rgba(64, 125, 85, 0.35);
+  background: rgba(216, 240, 223, 0.45);
+}
+
+.flow-menu .flow-actions {
+  margin-top: 7px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfaf6;
 }
 
 .journal-stack article.processed {
