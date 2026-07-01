@@ -173,6 +173,17 @@ h1 {
   background: var(--leaf);
 }
 
+.nav-pill,
+.room-action {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--leaf);
+  border-radius: 8px;
+  color: #fff;
+  background: var(--leaf);
+  cursor: pointer;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr) 300px;
@@ -247,6 +258,10 @@ h1 {
 .capture-form {
   display: grid;
   gap: 10px;
+}
+
+.persona-list[hidden] {
+  display: none;
 }
 
 .persona-card,
@@ -390,8 +405,26 @@ h1 {
 }
 
 .today-view {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: 12px;
+}
+
+.today-view[hidden] {
+  display: none;
+}
+
+.affairs-board {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.affairs-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .today-card {
@@ -728,7 +761,8 @@ h1 {
   .today-view,
   .project-grid,
   .room-grid,
-  .persona-signal-grid {
+  .persona-signal-grid,
+  .affairs-card-grid {
     grid-template-columns: 1fr;
   }
 

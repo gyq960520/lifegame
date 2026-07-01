@@ -132,23 +132,23 @@ const fallbackQuestions = [
 ];
 
 const state = {
+  view: "hall",
   personaId: "all",
   horizon: "all",
 };
 
 const personaList = document.querySelector("#personaList");
-const quickPersonaList = document.querySelector("#quickPersonaList");
+const hallRail = document.querySelector("#hallRail");
+const railTitle = document.querySelector("#railTitle");
+const affairsPersonaList = document.querySelector("#affairsPersonaList");
 const projectGrid = document.querySelector("#projectGrid");
 const todayView = document.querySelector("#todayView");
 const hallRoomGrid = document.querySelector("#hallRoomGrid");
-const personaRoom = document.querySelector("#personaRoom");
+const affairsRoom = document.querySelector("#affairsRoom");
 const questionList = document.querySelector("#questionList");
 const councilList = document.querySelector("#councilList");
 const npcEchoList = document.querySelector("#npcEchoList");
 const recentEntryList = document.querySelector("#recentEntryList");
-const personaQuestionList = document.querySelector("#personaQuestionList");
-const personaNpcList = document.querySelector("#personaNpcList");
-const personaRecentList = document.querySelector("#personaRecentList");
 const currentViewLabel = document.querySelector("#currentViewLabel");
 const stageTitle = document.querySelector("#stageTitle");
 const journalStack = document.querySelector("#journalStack");
@@ -198,6 +198,11 @@ function renderStats() {
 }
 
 function renderPersonas() {
+  const inAffairs = state.view === "affairs";
+  railTitle.textContent = inAffairs ? "今日事务" : "大厅";
+  hallRail.hidden = inAffairs;
+  personaList.hidden = !inAffairs;
+
   personaList.innerHTML = personas
     .map(
       (persona) => `
@@ -210,7 +215,7 @@ function renderPersonas() {
     )
     .join("");
 
-  quickPersonaList.innerHTML = personas
+  affairsPersonaList.innerHTML = personas
     .map(
       (persona) => `
         <button class="${state.personaId === persona.id ? "active" : ""}" data-quick-persona="${persona.id}">
@@ -238,8 +243,16 @@ function filteredProjects() {
 
 function renderProjects() {
   const selectedPersona = personas.find((persona) => persona.id === state.personaId);
-  stageTitle.textContent = selectedPersona ? selectedPersona.nickname : "大厅";
-  currentViewLabel.textContent = selectedPersona ? selectedPersona.name : "大厅";
+  if (state.view === "hall") {
+    stageTitle.textContent = "大厅";
+    currentViewLabel.textContent = "大厅";
+    projectGrid.innerHTML = "";
+    projectGrid.hidden = true;
+    return;
+  }
+
+  stageTitle.textContent = "今日事务";
+  currentViewLabel.textContent = selectedPersona ? selectedPersona.name : "今日事务";
 
   if (!selectedPersona) {
     projectGrid.innerHTML = "";
@@ -313,6 +326,13 @@ function renderProjects() {
 }
 
 function renderTodayView() {
+  if (state.view === "hall") {
+    todayView.innerHTML = "";
+    todayView.hidden = true;
+    return;
+  }
+
+  todayView.hidden = false;
   const projectScope = projects.filter((project) => state.personaId === "all" || project.personaId === state.personaId);
   const shortProjects = projectScope.filter(
     (project) => project.horizon === "short" && project.status !== "seed",
@@ -326,41 +346,39 @@ function renderTodayView() {
   const firstFocus = shortProjects[0] ?? activeProjects[0];
 
   todayView.innerHTML = `
-    <article class="today-card">
-      <span>建议下一步</span>
-      <strong>${firstFocus?.name ?? "暂无真实今日事项"}</strong>
-      <p>${firstFocus?.next ?? "先往思考之地丢一条真实输入，让系统从你的原话里分流。"}</p>
-      ${
-        firstFocus
-          ? `<div class="flow-actions"><button data-create-todo-from-project="${firstFocus.id}">转成待办</button></div>`
-          : ""
-      }
-    </article>
-    <article class="today-card">
-      <span>等待拍板</span>
-      <strong>${pendingJudgments.length} 条判断</strong>
-      <p>${pendingJudgments[0]?.text ?? "暂时没有待拍板判断。"}</p>
-    </article>
-    <article class="today-card">
-      <span>外部影响</span>
-      <strong>${npcInfluences.length} 条 NPC 输入</strong>
-      <p>${npcInfluences[0]?.npcName ? `${npcInfluences[0].npcName}：${npcInfluences[0].text}` : "暂时没有未处理外部影响。"}</p>
-    </article>
-    <article class="today-card">
-      <span>最近思考</span>
-      <strong>${openQuestions.length} 个问题</strong>
-      <p>${openQuestions[0]?.text ?? latestThoughts[0]?.text ?? "思考之地目前很干净。"}</p>
-    </article>
-    <article class="today-card">
-      <span>短期池</span>
-      <strong>${shortProjects.length} 个项目</strong>
-      <p>${shortProjects.map((project) => project.name).join(" / ") || "没有真实短期项目。"}</p>
-    </article>
-    <article class="today-card">
-      <span>今日原则</span>
-      <strong>总控最高</strong>
-      <p>脚本先做稳定分流；prompt 后续负责更细的语义判断。</p>
-    </article>
+    <section class="affairs-board">
+      <div class="room-title">
+        <span>${personaName(state.personaId)} 今日事务</span>
+        <strong>${openEntries.length}</strong>
+      </div>
+      <div class="affairs-card-grid">
+        <article class="today-card">
+          <span>建议下一步</span>
+          <strong>${firstFocus?.name ?? "暂无真实今日事项"}</strong>
+          <p>${firstFocus?.next ?? "先往思考之地丢一条真实输入，让系统从你的原话里分流。"}</p>
+          ${
+            firstFocus
+              ? `<div class="flow-actions"><button data-create-todo-from-project="${firstFocus.id}">转成待办</button></div>`
+              : ""
+          }
+        </article>
+        <article class="today-card">
+          <span>等待拍板</span>
+          <strong>${pendingJudgments.length} 条判断</strong>
+          <p>${pendingJudgments[0]?.text ?? "暂时没有待拍板判断。"}</p>
+        </article>
+        <article class="today-card">
+          <span>最近思考</span>
+          <strong>${openQuestions.length} 个问题</strong>
+          <p>${openQuestions[0]?.text ?? latestThoughts[0]?.text ?? "思考之地目前很干净。"}</p>
+        </article>
+        <article class="today-card">
+          <span>短期池</span>
+          <strong>${shortProjects.length} 个项目</strong>
+          <p>${shortProjects.map((project) => project.name).join(" / ") || "没有真实短期项目。"}</p>
+        </article>
+      </div>
+    </section>
   `;
 }
 
@@ -499,12 +517,12 @@ function renderQuestions() {
 }
 
 function renderRooms() {
-  const inPersonaRoom = state.personaId !== "all";
-  hallRoomGrid.hidden = inPersonaRoom;
-  personaRoom.hidden = !inPersonaRoom;
+  const inHall = state.view === "hall";
+  hallRoomGrid.hidden = !inHall;
+  affairsRoom.hidden = inHall;
 
-  if (inPersonaRoom) {
-    renderPersonaRoom();
+  if (!inHall) {
+    renderAffairsRoom();
     return;
   }
 
@@ -514,7 +532,7 @@ function renderRooms() {
   renderRecentRoom();
 }
 
-function renderPersonaRoom() {
+function renderAffairsRoom() {
   const selectedPersona = personas.find((persona) => persona.id === state.personaId);
   if (!selectedPersona) return;
 
@@ -522,56 +540,6 @@ function renderPersonaRoom() {
   document.querySelector("#personaRoomTitle").textContent = selectedPersona.name;
   document.querySelector("#personaRoomPurpose").textContent = selectedPersona.purpose;
   document.querySelector("#personaProjectCount").textContent = personaProjects.length;
-
-  const questions = buildQuestionMap();
-  document.querySelector("#personaQuestionCount").textContent = questions.length;
-  personaQuestionList.innerHTML =
-    questions
-      .map(
-        (question) => `
-          <article class="room-item">
-            <span>${question.label} / ${question.count} 次</span>
-            <strong>${question.text}</strong>
-          </article>
-        `,
-      )
-      .join("") || `<article class="room-item seed"><strong>这个人格还没有自己的问题。</strong></article>`;
-
-  const echoes = visibleEntries()
-    .filter((entry) => entry.type === "influence")
-    .slice()
-    .reverse()
-    .slice(0, 3);
-  document.querySelector("#personaNpcCount").textContent = echoes.length;
-  personaNpcList.innerHTML =
-    echoes
-      .map(
-        (entry) => `
-          <article class="room-item">
-            <span>${entry.npcName ? `NPC: ${entry.npcName}` : selectedPersona.name} / ${entry.createdAt}</span>
-            <strong>${entry.text}</strong>
-          </article>
-        `,
-      )
-      .join("") || `<article class="room-item seed"><strong>这个人格暂时没有外部回声。</strong></article>`;
-
-  const recentEntries = visibleEntries()
-    .filter((entry) => entry.type !== "noise")
-    .slice()
-    .reverse()
-    .slice(0, 4);
-  document.querySelector("#personaRecentCount").textContent = recentEntries.length;
-  personaRecentList.innerHTML =
-    recentEntries
-      .map(
-        (entry) => `
-          <article class="room-item">
-            <span>${captureTypeLabel(entry.type)} / ${entry.createdAt}</span>
-            <strong>${entry.text}</strong>
-          </article>
-        `,
-      )
-      .join("") || `<article class="room-item seed"><strong>这个人格还没有新的收纳。</strong></article>`;
 }
 
 function renderCouncilRoom() {
@@ -701,7 +669,22 @@ function normalizeQuestion(text) {
 }
 
 function setPersona(personaId) {
+  state.view = "affairs";
   state.personaId = personaId;
+  syncCapturePersona();
+  renderPersonas();
+  renderProjects();
+  renderTodayView();
+  renderRooms();
+}
+
+function enterAffairs(personaId = state.personaId === "all" ? "ceo" : state.personaId) {
+  setPersona(personaId);
+}
+
+function enterHall() {
+  state.view = "hall";
+  state.personaId = "all";
   syncCapturePersona();
   renderPersonas();
   renderProjects();
@@ -852,7 +835,10 @@ document.addEventListener("change", (event) => {
   renderRooms();
 });
 
-document.querySelector("#resetPersona").addEventListener("click", () => setPersona("all"));
+document.querySelector("#resetPersona").addEventListener("click", enterHall);
+document.querySelector("#enterAffairsTop").addEventListener("click", () => enterAffairs());
+document.querySelector("#enterAffairsRail").addEventListener("click", () => enterAffairs());
+document.querySelector("#enterAffairsRoom").addEventListener("click", () => enterAffairs());
 document.querySelector("#clearDraft").addEventListener("click", () => {
   captureText.value = "";
   captureText.focus();
