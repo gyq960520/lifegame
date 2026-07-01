@@ -124,7 +124,7 @@ let editingProjectId = null;
 
 saveToStorage(storageKeys.projects, projects);
 
-const questionSeeds = [
+const fallbackQuestions = [
   { label: "行动问题", text: "我最近 14 天真正要推进哪三件事？" },
   { label: "判断问题", text: "这个项目存在的理由是否还成立？" },
   { label: "过滤问题", text: "这次思考是任务、判断、问题、外部影响，还是噪音？" },
@@ -296,6 +296,7 @@ function renderTodayView() {
   const activeProjects = projects.filter((project) => project.status !== "seed");
   const openEntries = journalEntries.filter((entry) => !entry.processed);
   const pendingJudgments = openEntries.filter((entry) => entry.type === "judgment");
+  const openQuestions = openEntries.filter((entry) => entry.type === "question");
   const npcInfluences = openEntries.filter((entry) => entry.type === "influence");
   const latestThoughts = openEntries.slice(-3).reverse();
   const firstFocus = shortProjects[0] ?? activeProjects[0];
@@ -323,8 +324,8 @@ function renderTodayView() {
     </article>
     <article class="today-card">
       <span>最近思考</span>
-      <strong>${latestThoughts.length} 条未处理</strong>
-      <p>${latestThoughts[0]?.text ?? "思考之地目前很干净。"}</p>
+      <strong>${openQuestions.length} 个问题</strong>
+      <p>${openQuestions[0]?.text ?? latestThoughts[0]?.text ?? "思考之地目前很干净。"}</p>
     </article>
     <article class="today-card">
       <span>短期池</span>
@@ -432,16 +433,93 @@ function detectNpcName(text) {
 }
 
 function renderQuestions() {
-  questionList.innerHTML = questionSeeds
+  const questions = buildQuestionMap();
+
+  if (questions.length === 0) {
+    questionList.innerHTML = fallbackQuestions
+      .map(
+        (question) => `
+          <article class="question-item seed">
+            <span>${question.label}</span>
+            <strong>${question.text}</strong>
+          </article>
+        `,
+      )
+      .join("");
+    return;
+  }
+
+  questionList.innerHTML = questions
     .map(
       (question) => `
         <article class="question-item">
-          <span>${question.label}</span>
+          <span>${question.label} / ${question.count} 次 / ${question.personas}</span>
           <strong>${question.text}</strong>
+          <p>${question.latest}</p>
         </article>
       `,
     )
     .join("");
+}
+
+function buildQuestionMap() {
+  const groups = new Map();
+
+  journalEntries
+    .filter((entry) => entry.type !== "noise")
+    .filter((entry) => state.personaId === "all" || entry.personaId === state.personaId)
+    .filter((entry) => entry.type === "question" || isQuestionLike(entry.text))
+    .forEach((entry) => {
+      const questionText = extractQuestionText(entry.text);
+      const key = normalizeQuestion(questionText);
+      if (!key) return;
+
+      const current = groups.get(key) ?? {
+        text: questionText,
+        count: 0,
+        latest: "",
+        latestIndex: -1,
+        personas: new Set(),
+        openCount: 0,
+      };
+      current.count += 1;
+      current.openCount += entry.processed ? 0 : 1;
+      current.personas.add(personaName(entry.personaId));
+      current.latest = entry.text;
+      current.latestIndex = journalEntries.indexOf(entry);
+      groups.set(key, current);
+    });
+
+  return [...groups.values()]
+    .sort((a, b) => b.openCount - a.openCount || b.count - a.count || b.latestIndex - a.latestIndex)
+    .slice(0, 6)
+    .map((question) => ({
+      label: question.openCount > 0 ? `${question.openCount} 个未处理` : "已沉淀",
+      text: question.text,
+      latest: question.latest,
+      count: question.count,
+      personas: [...question.personas].join(" / "),
+    }));
+}
+
+function isQuestionLike(text) {
+  return /[?？]/.test(text) || /(怎么|为什么|要不要|是否|能不能|该不该|如何|哪几个|哪些)/.test(text);
+}
+
+function extractQuestionText(text) {
+  const parts = text
+    .split(/[\n。；;]/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const questionPart = parts.find((part) => isQuestionLike(part));
+  return (questionPart ?? text).trim();
+}
+
+function normalizeQuestion(text) {
+  return text
+    .toLowerCase()
+    .replace(/[，。！？?、；;：:\s"'“”‘’（）()]/g, "")
+    .slice(0, 48);
 }
 
 function setPersona(personaId) {
@@ -449,6 +527,7 @@ function setPersona(personaId) {
   renderPersonas();
   renderProjects();
   renderTodayView();
+  renderQuestions();
 }
 
 function setHorizon(horizon) {
@@ -505,6 +584,7 @@ document.addEventListener("click", (event) => {
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
     renderTodayView();
+    renderQuestions();
   }
 
   const flowButton = event.target.closest("[data-flow-entry]");
@@ -515,6 +595,7 @@ document.addEventListener("click", (event) => {
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
     renderTodayView();
+    renderQuestions();
   }
 
   const processedButton = event.target.closest("[data-mark-processed]");
@@ -527,6 +608,7 @@ document.addEventListener("click", (event) => {
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
     renderTodayView();
+    renderQuestions();
   }
 
   const setNextButton = event.target.closest("[data-set-next]");
@@ -545,6 +627,7 @@ document.addEventListener("click", (event) => {
     renderProjects();
     renderJournal();
     renderTodayView();
+    renderQuestions();
   }
 
   const createTodoButton = event.target.closest("[data-create-todo-from-project]");
@@ -568,6 +651,7 @@ document.addEventListener("click", (event) => {
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
     renderTodayView();
+    renderQuestions();
   }
 });
 
@@ -581,6 +665,7 @@ document.addEventListener("change", (event) => {
   saveToStorage(storageKeys.journal, journalEntries);
   renderJournal();
   renderTodayView();
+  renderQuestions();
 });
 
 document.querySelector("#resetPersona").addEventListener("click", () => setPersona("all"));
@@ -615,6 +700,7 @@ captureForm.addEventListener("submit", (event) => {
   captureText.value = "";
   renderJournal();
   renderTodayView();
+  renderQuestions();
 });
 
 renderStats();

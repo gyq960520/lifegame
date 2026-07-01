@@ -521,6 +521,17 @@ h1 {
   line-height: 1.4;
 }
 
+.question-item p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.question-item.seed {
+  background: #fbfaf6;
+}
+
 @media (max-width: 1080px) {
   .workspace {
     grid-template-columns: 220px minmax(0, 1fr);
