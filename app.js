@@ -220,6 +220,7 @@ function renderCapturePersonaOptions() {
   capturePersona.innerHTML = personas
     .map((persona) => `<option value="${persona.id}">${persona.name}</option>`)
     .join("");
+  syncCapturePersona();
 }
 
 function filteredProjects() {
@@ -307,11 +308,12 @@ function renderProjects() {
 }
 
 function renderTodayView() {
-  const shortProjects = projects.filter(
+  const projectScope = projects.filter((project) => state.personaId === "all" || project.personaId === state.personaId);
+  const shortProjects = projectScope.filter(
     (project) => project.horizon === "short" && project.status !== "seed",
   );
-  const activeProjects = projects.filter((project) => project.status !== "seed");
-  const openEntries = journalEntries.filter((entry) => !entry.processed);
+  const activeProjects = projectScope.filter((project) => project.status !== "seed");
+  const openEntries = visibleEntries().filter((entry) => !entry.processed);
   const pendingJudgments = openEntries.filter((entry) => entry.type === "judgment");
   const openQuestions = openEntries.filter((entry) => entry.type === "question");
   const npcInfluences = openEntries.filter((entry) => entry.type === "influence");
@@ -455,6 +457,16 @@ function renderQuestions() {
   document.querySelector("#questionCount").textContent = questions.length;
 
   if (questions.length === 0) {
+    if (state.personaId !== "all") {
+      questionList.innerHTML = `
+        <article class="question-item seed">
+          <span>${personaName(state.personaId)}</span>
+          <strong>这个人格还没有自己的问题。</strong>
+        </article>
+      `;
+      return;
+    }
+
     questionList.innerHTML = fallbackQuestions
       .map(
         (question) => `
@@ -616,10 +628,16 @@ function normalizeQuestion(text) {
 
 function setPersona(personaId) {
   state.personaId = personaId;
+  syncCapturePersona();
   renderPersonas();
   renderProjects();
   renderTodayView();
   renderRooms();
+}
+
+function syncCapturePersona() {
+  if (!capturePersona) return;
+  capturePersona.value = state.personaId === "all" ? "ceo" : state.personaId;
 }
 
 function setHorizon(horizon) {
