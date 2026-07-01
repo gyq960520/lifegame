@@ -140,7 +140,7 @@ const personaList = document.querySelector("#personaList");
 const quickPersonaList = document.querySelector("#quickPersonaList");
 const projectGrid = document.querySelector("#projectGrid");
 const todayView = document.querySelector("#todayView");
-const ceoRoomGrid = document.querySelector("#ceoRoomGrid");
+const hallRoomGrid = document.querySelector("#hallRoomGrid");
 const personaRoom = document.querySelector("#personaRoom");
 const questionList = document.querySelector("#questionList");
 const councilList = document.querySelector("#councilList");
@@ -238,8 +238,8 @@ function filteredProjects() {
 
 function renderProjects() {
   const selectedPersona = personas.find((persona) => persona.id === state.personaId);
-  stageTitle.textContent = selectedPersona ? selectedPersona.nickname : "游戏看板";
-  currentViewLabel.textContent = selectedPersona ? selectedPersona.name : "总控";
+  stageTitle.textContent = selectedPersona ? selectedPersona.nickname : "大厅";
+  currentViewLabel.textContent = selectedPersona ? selectedPersona.name : "大厅";
 
   if (!selectedPersona) {
     projectGrid.innerHTML = "";
@@ -337,7 +337,7 @@ function renderTodayView() {
       }
     </article>
     <article class="today-card">
-      <span>等待总控拍板</span>
+      <span>等待拍板</span>
       <strong>${pendingJudgments.length} 条判断</strong>
       <p>${pendingJudgments[0]?.text ?? "暂时没有待拍板判断。"}</p>
     </article>
@@ -500,7 +500,7 @@ function renderQuestions() {
 
 function renderRooms() {
   const inPersonaRoom = state.personaId !== "all";
-  ceoRoomGrid.hidden = inPersonaRoom;
+  hallRoomGrid.hidden = inPersonaRoom;
   personaRoom.hidden = !inPersonaRoom;
 
   if (inPersonaRoom) {
@@ -592,7 +592,7 @@ function renderCouncilRoom() {
           </article>
         `,
       )
-      .join("") || `<article class="room-item seed"><strong>暂时没有需要总控拍板的判断。</strong></article>`;
+      .join("") || `<article class="room-item seed"><strong>暂时没有需要拍板的判断。</strong></article>`;
 }
 
 function renderNpcEchoRoom() {
