@@ -377,10 +377,16 @@ function renderTodayView() {
         <article class="today-card">
           <span>今日事项</span>
           <strong>${firstTodayItem?.text ?? `${todayItems.length} 个事项`}</strong>
-          <p>${firstTodayItem ? "已进入今天要处理的事项。" : (firstFocus?.next ?? "先往思考之地丢一条真实输入，让系统从你的原话里分流。")}</p>
+          <p>${firstTodayItem ? "已进入今天要处理的事项。" : "还没有确认今天要做的事项。"}</p>
           ${
             !firstTodayItem && firstFocus
-              ? `<div class="flow-actions"><button data-create-todo-from-project="${firstFocus.id}">加入今日事项</button></div>`
+              ? `
+                <div class="today-candidate">
+                  <span>可加入今日事项</span>
+                  <p>${firstFocus.next}</p>
+                  <div class="flow-actions"><button data-create-todo-from-project="${firstFocus.id}">加入今日事项</button></div>
+                </div>
+              `
               : ""
           }
         </article>

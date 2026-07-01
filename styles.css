@@ -550,6 +550,18 @@ h1 {
   line-height: 1.45;
 }
 
+.today-candidate {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--soft);
+}
+
+.today-candidate p {
+  color: var(--ink);
+}
+
 .project-card {
   display: grid;
   gap: 10px;
