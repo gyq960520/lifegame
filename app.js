@@ -140,10 +140,15 @@ const personaList = document.querySelector("#personaList");
 const quickPersonaList = document.querySelector("#quickPersonaList");
 const projectGrid = document.querySelector("#projectGrid");
 const todayView = document.querySelector("#todayView");
+const ceoRoomGrid = document.querySelector("#ceoRoomGrid");
+const personaRoom = document.querySelector("#personaRoom");
 const questionList = document.querySelector("#questionList");
 const councilList = document.querySelector("#councilList");
 const npcEchoList = document.querySelector("#npcEchoList");
 const recentEntryList = document.querySelector("#recentEntryList");
+const personaQuestionList = document.querySelector("#personaQuestionList");
+const personaNpcList = document.querySelector("#personaNpcList");
+const personaRecentList = document.querySelector("#personaRecentList");
 const currentViewLabel = document.querySelector("#currentViewLabel");
 const stageTitle = document.querySelector("#stageTitle");
 const journalStack = document.querySelector("#journalStack");
@@ -494,10 +499,79 @@ function renderQuestions() {
 }
 
 function renderRooms() {
+  const inPersonaRoom = state.personaId !== "all";
+  ceoRoomGrid.hidden = inPersonaRoom;
+  personaRoom.hidden = !inPersonaRoom;
+
+  if (inPersonaRoom) {
+    renderPersonaRoom();
+    return;
+  }
+
   renderQuestions();
   renderCouncilRoom();
   renderNpcEchoRoom();
   renderRecentRoom();
+}
+
+function renderPersonaRoom() {
+  const selectedPersona = personas.find((persona) => persona.id === state.personaId);
+  if (!selectedPersona) return;
+
+  const personaProjects = projects.filter((project) => project.personaId === selectedPersona.id);
+  document.querySelector("#personaRoomTitle").textContent = selectedPersona.name;
+  document.querySelector("#personaRoomPurpose").textContent = selectedPersona.purpose;
+  document.querySelector("#personaProjectCount").textContent = personaProjects.length;
+
+  const questions = buildQuestionMap();
+  document.querySelector("#personaQuestionCount").textContent = questions.length;
+  personaQuestionList.innerHTML =
+    questions
+      .map(
+        (question) => `
+          <article class="room-item">
+            <span>${question.label} / ${question.count} 次</span>
+            <strong>${question.text}</strong>
+          </article>
+        `,
+      )
+      .join("") || `<article class="room-item seed"><strong>这个人格还没有自己的问题。</strong></article>`;
+
+  const echoes = visibleEntries()
+    .filter((entry) => entry.type === "influence")
+    .slice()
+    .reverse()
+    .slice(0, 3);
+  document.querySelector("#personaNpcCount").textContent = echoes.length;
+  personaNpcList.innerHTML =
+    echoes
+      .map(
+        (entry) => `
+          <article class="room-item">
+            <span>${entry.npcName ? `NPC: ${entry.npcName}` : selectedPersona.name} / ${entry.createdAt}</span>
+            <strong>${entry.text}</strong>
+          </article>
+        `,
+      )
+      .join("") || `<article class="room-item seed"><strong>这个人格暂时没有外部回声。</strong></article>`;
+
+  const recentEntries = visibleEntries()
+    .filter((entry) => entry.type !== "noise")
+    .slice()
+    .reverse()
+    .slice(0, 4);
+  document.querySelector("#personaRecentCount").textContent = recentEntries.length;
+  personaRecentList.innerHTML =
+    recentEntries
+      .map(
+        (entry) => `
+          <article class="room-item">
+            <span>${captureTypeLabel(entry.type)} / ${entry.createdAt}</span>
+            <strong>${entry.text}</strong>
+          </article>
+        `,
+      )
+      .join("") || `<article class="room-item seed"><strong>这个人格还没有新的收纳。</strong></article>`;
 }
 
 function renderCouncilRoom() {

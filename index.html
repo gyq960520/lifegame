@@ -62,7 +62,7 @@
               </div>
             </div>
             <div id="todayView" class="today-view"></div>
-            <div class="room-grid">
+            <div id="ceoRoomGrid" class="room-grid">
               <section class="room-panel">
                 <div class="room-title">
                   <span>总控议事厅</span>
@@ -91,6 +91,38 @@
                 </div>
                 <div id="recentEntryList" class="room-list"></div>
               </section>
+            </div>
+            <div id="personaRoom" class="persona-room" hidden>
+              <section class="room-panel persona-overview">
+                <div class="room-title">
+                  <span id="personaRoomTitle">人格房间</span>
+                  <strong id="personaProjectCount">0</strong>
+                </div>
+                <p id="personaRoomPurpose"></p>
+              </section>
+              <div class="persona-signal-grid">
+                <section class="room-panel">
+                  <div class="room-title">
+                    <span>人格问题</span>
+                    <strong id="personaQuestionCount">0</strong>
+                  </div>
+                  <div id="personaQuestionList" class="room-list"></div>
+                </section>
+                <section class="room-panel">
+                  <div class="room-title">
+                    <span>人格回声</span>
+                    <strong id="personaNpcCount">0</strong>
+                  </div>
+                  <div id="personaNpcList" class="room-list"></div>
+                </section>
+                <section class="room-panel">
+                  <div class="room-title">
+                    <span>人格收纳</span>
+                    <strong id="personaRecentCount">0</strong>
+                  </div>
+                  <div id="personaRecentList" class="room-list"></div>
+                </section>
+              </div>
             </div>
             <div id="projectGrid" class="project-grid"></div>
           </section>

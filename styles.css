@@ -297,22 +297,48 @@ h1 {
   font-weight: 800;
 }
 
-.room-grid {
+.room-grid,
+.persona-signal-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 12px;
 }
 
+.persona-room {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.persona-room[hidden] {
+  display: none;
+}
+
+.persona-signal-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 0;
+}
+
 .room-panel {
   display: grid;
   align-content: start;
   gap: 10px;
-  min-height: 190px;
+  min-height: 176px;
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
+}
+
+.persona-overview {
+  min-height: 96px;
+}
+
+.persona-overview p {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.55;
 }
 
 .room-title {
@@ -356,6 +382,11 @@ h1 {
 
 .room-item.seed {
   color: var(--muted);
+}
+
+.room-panel .question-item {
+  border: 0;
+  background: #fbfaf6;
 }
 
 .today-view {
@@ -696,7 +727,8 @@ h1 {
   .workspace,
   .today-view,
   .project-grid,
-  .room-grid {
+  .room-grid,
+  .persona-signal-grid {
     grid-template-columns: 1fr;
   }
 
