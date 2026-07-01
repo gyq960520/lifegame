@@ -405,13 +405,9 @@ function renderTodayView() {
 function renderJournal() {
   if (journalEntries.length === 0) {
     journalStack.innerHTML = `
-      <article>
-        <span>今日入口</span>
-        <strong>把一段 AI 对话或原话放进来，先分类和记录。</strong>
-      </article>
-      <article>
-        <span>工作边界</span>
-        <strong>思考之地只负责分类和记录，具体执行回到对应人格和项目。</strong>
+      <article class="journal-empty">
+        <span>等待输入</span>
+        <strong>这里会显示刚刚整理好的思绪。</strong>
       </article>
     `;
     return;
