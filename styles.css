@@ -34,7 +34,7 @@ button {
 }
 
 .app-shell {
-  width: min(1440px, 100%);
+  width: min(1560px, 100%);
   margin: 0 auto;
   padding: 22px;
 }
@@ -245,7 +245,8 @@ h1 {
 }
 
 .affairs-mode .workspace {
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(720px, 1fr) clamp(360px, 27vw, 430px);
+  gap: 18px;
 }
 
 .persona-rail,
@@ -828,8 +829,18 @@ h1 {
     grid-template-columns: 220px minmax(0, 1fr);
   }
 
+  .affairs-mode .workspace {
+    grid-template-columns: 1fr;
+  }
+
   .insight-panel {
     grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1081px) and (max-width: 1280px) {
+  .affairs-mode .workspace {
+    grid-template-columns: minmax(0, 1fr) 360px;
   }
 }
 
