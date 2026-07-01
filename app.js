@@ -371,7 +371,7 @@ function renderTodayView() {
       <div class="affairs-card-grid">
         <article class="today-card">
           <span>建议下一步</span>
-          <strong>${firstFocus?.name ?? "暂无真实今日事项"}</strong>
+          <strong>${firstFocus?.name ?? "0 个事项"}</strong>
           <p>${firstFocus?.next ?? "先往思考之地丢一条真实输入，让系统从你的原话里分流。"}</p>
           ${
             firstFocus
