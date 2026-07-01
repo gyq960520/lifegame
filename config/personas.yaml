@@ -1,0 +1,174 @@
+# lifegame / 玩中取乐系统
+# 初始人格配置。它不是人格分裂清单，而是同一个人在不同战场上的工作台。
+
+personas:
+  - id: ceo
+    name: 总控本人
+    nickname: 人生游戏总 CEO
+    purpose: 负责方向、原则、节奏、反思、情绪管理和最终拍板。
+    mode: 统筹
+    horizon_focus:
+      - short
+      - mid
+      - long
+    cares_about:
+      - 我为什么做这些事
+      - 哪些事情值得推进
+      - 最近状态和情绪是否稳定
+      - 多个身份之间是否互相打架
+      - 该放弃什么
+    principles:
+      - 提效不是自我压榨，而是减少混乱和无意义切换。
+      - 多 agent 可以给建议，但最终由总控拍板。
+      - 每个项目都要说清楚为什么存在。
+    default_question_filters:
+      keep:
+        - 人生方向
+        - 决策
+        - 复盘
+        - 情绪和能量
+      drop:
+        - 纯测试问题
+        - 工具验证问题
+        - 无上下文闲聊
+    agents: []
+
+  - id: work-yuanqi
+    name: 元气工作人格
+    nickname: 元气森林的牛马
+    purpose: 处理工作相关的短期交付、压力管理和边界感。
+    mode: 执行
+    horizon_focus:
+      - short
+      - mid
+    cares_about:
+      - 本周必须交付什么
+      - 哪些工作压力需要拆解
+      - 哪些事情不该带回 Life 空间
+      - 如何保持节奏而不是被动挨打
+    principles:
+      - 公司业务细节归 Vault-Work，不混入 Vault-Life。
+      - 这里只记录个人状态、原则和生活层面的反思。
+      - 先保交付，再谈优化。
+    default_question_filters:
+      keep:
+        - 个人状态
+        - 工作节奏
+        - 压力复盘
+      drop:
+        - 公司内部数据
+        - 同事隐私
+        - 具体业务材料
+    agents: []
+
+  - id: baiheverse
+    name: baiheverse 副业投资人
+    nickname: 副业投资人
+    purpose: 负责副业、产品、商业化、内容资产和长期复利。
+    mode: 创业
+    horizon_focus:
+      - mid
+      - long
+    cares_about:
+      - 哪些副业值得做
+      - 产品是否能积累资产
+      - 商业化路径是否清楚
+      - 当前最小可行动作是什么
+    principles:
+      - 不做只消耗精力但不积累资产的事。
+      - 先验证需求，再扩大投入。
+      - 允许小步试错，但要留复盘。
+    default_question_filters:
+      keep:
+        - 产品判断
+        - 商业化
+        - 需求验证
+        - 复盘
+      drop:
+        - 空泛脑暴
+        - 没有行动出口的点子堆叠
+    agents: []
+
+  - id: personal-investor
+    name: 个人投资者
+    nickname: 投资人格
+    purpose: 负责仓位、标的、交易判断、风险控制和投资复盘。
+    mode: 判断
+    horizon_focus:
+      - short
+      - mid
+      - long
+    cares_about:
+      - 仓位是否合理
+      - 买卖理由是否清楚
+      - 风险和退出条件是什么
+      - 判断是否被情绪影响
+    principles:
+      - 每个投资动作都要有理由、约束和复盘时间。
+      - 先问风险，再问收益。
+      - 高频情绪不等于高质量判断。
+    default_question_filters:
+      keep:
+        - 投资决策
+        - 风险
+        - 复盘
+        - 研究问题
+      drop:
+        - 无上下文行情噪音
+        - 纯情绪喊单
+    agents: []
+
+  - id: renovation-manager
+    name: 装修经理
+    nickname: 装修项目经理
+    purpose: 负责装修推进、供应商沟通、预算、清单和待确认事项。
+    mode: 项目推进
+    horizon_focus:
+      - short
+      - mid
+    cares_about:
+      - 下一步要确认什么
+      - 哪些事项会拖工期
+      - 预算和取舍
+      - 哪些经验要复盘沉淀
+    principles:
+      - 所有待确认事项都要有下一步。
+      - 能拍板就拍板，不能拍板就列选项和约束。
+      - 复盘要沉淀成下次可复用的经验。
+    default_question_filters:
+      keep:
+        - 待办
+        - 预算
+        - 供应商
+        - 决策
+        - 复盘
+      drop:
+        - 已完成且无复盘价值的流水记录
+    agents: []
+
+  - id: life-planner
+    name: 生活安排者
+    nickname: 日常关卡规划师
+    purpose: 负责旅行、家庭、健康、日常安排和生活体验。
+    mode: 安排
+    horizon_focus:
+      - short
+      - mid
+    cares_about:
+      - 最近生活是否舒服
+      - 家人和关系是否被照顾
+      - 旅行和日常安排是否清楚
+      - 健康事项是否有节奏
+    principles:
+      - 生活安排不是杂事，是体验设计。
+      - 能让未来自己轻松一点的安排值得做。
+      - 不把所有生活都变成任务。
+    default_question_filters:
+      keep:
+        - 家庭
+        - 旅行
+        - 健康
+        - 日常安排
+      drop:
+        - 一次性无价值查询
+    agents: []

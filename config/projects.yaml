@@ -1,0 +1,88 @@
+# lifegame / 玩中取乐系统
+# 初始项目配置。每个项目必须挂到一个主人格。
+
+projects:
+  - id: lifegame
+    name: lifegame
+    chinese_name: 玩中取乐系统
+    persona_id: ceo
+    why: 做一个愉快的人生提效工具，让 Vault-Life 成为人生游戏总控。
+    status: seed
+    horizon: mid
+    progress_note: 已确定代号、中文名、产品方向和首批人格。
+    current_blocker: 需要确认首批项目、人格式样和 MVP 技术路线。
+    next_action: 用配置文件跑通纸面系统，再 scaffold 本地 Web MVP。
+    tags:
+      - 个人项目
+      - 工具
+      - lifegame
+
+  - id: baiheverse
+    name: baiheverse
+    persona_id: baiheverse
+    why: 作为副业和长期资产线，探索产品、内容和商业化机会。
+    status: active
+    horizon: long
+    progress_note: 已作为独立人格进入 lifegame 初始配置。
+    current_blocker: 需要补充当前具体项目和下一步。
+    next_action: 梳理 baiheverse 当前在做的 1-3 个具体项目。
+    tags:
+      - 副业
+      - 产品
+      - 商业化
+
+  - id: personal-investing
+    name: 个人投资
+    persona_id: personal-investor
+    why: 管理个人投资判断、仓位、研究问题和复盘。
+    status: active
+    horizon: long
+    progress_note: 已作为独立人格进入 lifegame 初始配置。
+    current_blocker: 需要定义投资记录进入 lifegame 的边界。
+    next_action: 确认投资模块首版只记录决策和复盘，还是也记录持仓状态。
+    tags:
+      - 投资
+      - 复盘
+      - 风险
+
+  - id: renovation
+    name: 装修
+    persona_id: renovation-manager
+    why: 推进装修事项，沉淀装修经验，减少反复纠结。
+    status: active
+    horizon: mid
+    progress_note: 已作为独立人格进入 lifegame 初始配置。
+    current_blocker: 需要从现有装修 wiki 中选择进入 lifegame 的项目边界。
+    next_action: 确认装修相关项目是合并为一个项目，还是拆成 hxt、待选清单、复盘。
+    tags:
+      - 装修
+      - 项目推进
+      - 复盘
+
+  - id: life-arrangement
+    name: 生活安排
+    persona_id: life-planner
+    why: 管理旅行、健康、家庭、日常安排，让生活更顺。
+    status: seed
+    horizon: mid
+    progress_note: 已作为生活人格进入初始配置。
+    current_blocker: 需要补充当前真实事项。
+    next_action: 列出最近 2 周生活安排里最值得跟踪的事情。
+    tags:
+      - 生活
+      - 健康
+      - 旅行
+
+  - id: work-rhythm
+    name: 工作节奏
+    persona_id: work-yuanqi
+    why: 只在 Life 空间记录个人节奏、压力和边界，不记录公司业务材料。
+    status: seed
+    horizon: short
+    progress_note: 已作为工作人格的 Life 侧投影进入初始配置。
+    current_blocker: 需要保持与 Vault-Work 的边界。
+    next_action: 定义哪些工作反思可以进入 Life，哪些必须留在 Work。
+    tags:
+      - 工作节奏
+      - 压力管理
+      - 边界

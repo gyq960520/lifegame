@@ -1,0 +1,14 @@
+# lifegame / 玩中取乐系统
+# NPC 是外部人员 / 外部输入源。NPC 可以影响判断，但最高决策权仍归总控本人。
+
+npcs:
+  - id: placeholder-high-weight
+    name: 待补充高权重 NPC
+    relationship: 待补充
+    influence_weight: high
+    trust_level: unknown
+    domain:
+      - 待补充
+    default_boundary: 高权重不等于自动采纳，最终由总控本人拍板。
+    notes: 后续把真实外部人员按权重和领域补进来。
+

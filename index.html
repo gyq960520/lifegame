@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lifegame - 玩中取乐系统</title>
+    <link rel="icon" href="./assets/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="./assets/favicon-32.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="./assets/favicon-180.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <img src="./assets/logo-pixel.png" alt="lifegame logo" />
+          <div>
+            <p class="eyebrow">lifegame</p>
+            <h1>玩中取乐系统</h1>
+          </div>
+        </div>
+        <div class="today-chip">
+          <span>当前视角</span>
+          <strong>总控本人</strong>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="today-panel">
+          <div class="today-copy">
+            <p class="eyebrow">Vault-Life 总 CEO</p>
+            <h2>先看清今天怎么玩，再决定怎么提效。</h2>
+          </div>
+          <div class="today-actions">
+            <div class="mini-stats" aria-label="关键指标">
+              <span><strong id="personaCount">0</strong> 人格</span>
+              <span><strong id="projectCount">0</strong> 项目</span>
+              <span><strong id="shortCount">0</strong> 短期</span>
+              <span><strong id="futureCount">0</strong> 中长期</span>
+            </div>
+            <div id="quickPersonaList" class="persona-switcher" aria-label="人格快捷切换"></div>
+          </div>
+        </section>
+
+        <section class="workspace">
+          <aside class="persona-rail" aria-label="人格列表">
+            <div class="section-title">
+              <span>人格</span>
+              <button id="resetPersona" title="显示全部">全部</button>
+            </div>
+            <div id="personaList" class="persona-list"></div>
+          </aside>
+
+          <section class="main-stage">
+            <div class="section-title">
+              <span id="stageTitle">今日总览</span>
+              <div class="segmented" aria-label="时间视角">
+                <button class="active" data-horizon="all">全部</button>
+                <button data-horizon="short">短期</button>
+                <button data-horizon="mid">中期</button>
+                <button data-horizon="long">长期</button>
+              </div>
+            </div>
+            <div id="todayView" class="today-view"></div>
+            <div id="projectGrid" class="project-grid"></div>
+          </section>
+
+          <aside class="insight-panel">
+            <div class="section-title">
+              <span>思考之地</span>
+              <button id="clearDraft" title="清空输入">×</button>
+            </div>
+            <form id="captureForm" class="capture-form">
+              <label>
+                人格
+                <select id="capturePersona"></select>
+              </label>
+              <label>
+                内容
+                <textarea id="captureText" rows="5" placeholder="把和 AI 聊出来的思考、原话、问题或外部影响放这里。分类和记录交给 lifegame。"></textarea>
+              </label>
+              <button type="submit">放入思考之地</button>
+            </form>
+
+            <div class="section-title compact">
+              <span>思考记录</span>
+            </div>
+            <div id="journalStack" class="journal-stack"></div>
+
+            <div class="section-title compact">
+              <span>问题地图</span>
+            </div>
+            <div id="questionList" class="question-list"></div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
