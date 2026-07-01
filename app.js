@@ -364,6 +364,14 @@ function renderJournal() {
           <div class="journal-head">
             <span>${captureTypeLabel(entry.type)} / ${personaName(entry.personaId)}${entry.npcName ? ` / NPC: ${entry.npcName}` : ""}${entry.processed ? " / 已处理" : ""} / ${entry.createdAt}</span>
             <div class="entry-tools">
+              <button data-delete-entry="${entry.id}" title="删除记录">×</button>
+            </div>
+          </div>
+          <strong>${entry.text}</strong>
+          <div class="auto-label">
+            <span>系统判定：${captureTypeLabel(entry.type)}</span>
+            <label>
+              判错了再改
               <select data-entry-type="${entry.id}" title="修正类型">
                 ${captureTypes
                   .map(
@@ -372,10 +380,8 @@ function renderJournal() {
                   )
                   .join("")}
               </select>
-              <button data-delete-entry="${entry.id}" title="删除记录">×</button>
-            </div>
+            </label>
           </div>
-          <strong>${entry.text}</strong>
           <div class="flow-actions">
             <button data-flow-type="task" data-flow-entry="${entry.id}">转任务</button>
             <button data-flow-type="judgment" data-flow-entry="${entry.id}">转判断</button>
