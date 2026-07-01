@@ -117,10 +117,12 @@ const storageKeys = {
   projects: "lifegame.projects.v1",
   journal: "lifegame.journal.v1",
   ui: "lifegame.ui.v1",
+  suggestions: "lifegame.suggestions.v1",
 };
 
 let projects = sanitizeProjects(loadFromStorage(storageKeys.projects, seedProjects));
 let journalEntries = loadFromStorage(storageKeys.journal, []);
+let ignoredSuggestions = loadFromStorage(storageKeys.suggestions, []);
 let editingProjectId = null;
 
 saveToStorage(storageKeys.projects, projects);
@@ -151,6 +153,7 @@ const questionList = document.querySelector("#questionList");
 const councilList = document.querySelector("#councilList");
 const npcEchoList = document.querySelector("#npcEchoList");
 const recentEntryList = document.querySelector("#recentEntryList");
+const suggestionTrashList = document.querySelector("#suggestionTrashList");
 const stageTitle = document.querySelector("#stageTitle");
 const journalStack = document.querySelector("#journalStack");
 const captureForm = document.querySelector("#captureForm");
@@ -364,7 +367,12 @@ function renderTodayView() {
   const npcInfluences = openEntries.filter((entry) => entry.type === "influence");
   const latestThoughts = openEntries.slice(-3).reverse();
   const todayItems = openEntries.filter((entry) => entry.type === "task" && entry.bucket === "today");
-  const firstFocus = shortProjects[0] ?? activeProjects[0];
+  const ignoredProjectIds = new Set(ignoredSuggestions.map((suggestion) => suggestion.projectId));
+  const suggestedProjects = [...shortProjects, ...activeProjects].filter(
+    (project, index, list) =>
+      list.findIndex((item) => item.id === project.id) === index && !ignoredProjectIds.has(project.id),
+  );
+  const firstFocus = suggestedProjects[0];
   const firstTodayItem = todayItems[0];
 
   todayView.innerHTML = `
@@ -382,9 +390,11 @@ function renderTodayView() {
             !firstTodayItem && firstFocus
               ? `
                 <div class="today-candidate">
-                  <span>可加入今日事项</span>
-                  <p>${firstFocus.next}</p>
-                  <div class="flow-actions"><button data-create-todo-from-project="${firstFocus.id}">加入今日事项</button></div>
+                  <p><span>系统建议加入事项：</span>${firstFocus.next}</p>
+                  <div class="mini-actions">
+                    <button data-create-todo-from-project="${firstFocus.id}">加入</button>
+                    <button data-ignore-suggestion="${firstFocus.id}">忽略</button>
+                  </div>
                 </div>
               `
               : ""
@@ -566,6 +576,7 @@ function renderRooms() {
   renderCouncilRoom();
   renderNpcEchoRoom();
   renderRecentRoom();
+  renderSuggestionTrashRoom();
 }
 
 function renderCouncilRoom() {
@@ -629,6 +640,25 @@ function renderRecentRoom() {
         `,
       )
       .join("") || `<article class="room-item seed"><strong>新的思考会先落在这里，再去各个房间沉淀。</strong></article>`;
+}
+
+function renderSuggestionTrashRoom() {
+  const trash = ignoredSuggestions.slice().reverse().slice(0, 4);
+  document.querySelector("#suggestionTrashCount").textContent = ignoredSuggestions.length;
+  suggestionTrashList.innerHTML =
+    trash
+      .map(
+        (suggestion) => `
+          <article class="room-item suggestion-trash-item">
+            <span>${personaName(suggestion.personaId)} / ${suggestion.ignoredAt}</span>
+            <strong>${suggestion.text}</strong>
+            <div class="mini-actions">
+              <button data-restore-suggestion="${suggestion.projectId}">找回</button>
+            </div>
+          </article>
+        `,
+      )
+      .join("") || `<article class="room-item seed"><strong>暂时没有被忽略的 AI 建议。</strong></article>`;
 }
 
 function visibleEntries() {
@@ -868,8 +898,43 @@ document.addEventListener("click", (event) => {
         minute: "2-digit",
       }),
     });
+    ignoredSuggestions = ignoredSuggestions.filter((suggestion) => suggestion.projectId !== project.id);
+    saveToStorage(storageKeys.suggestions, ignoredSuggestions);
     saveToStorage(storageKeys.journal, journalEntries);
     renderJournal();
+    renderTodayView();
+    renderRooms();
+  }
+
+  const ignoreSuggestionButton = event.target.closest("[data-ignore-suggestion]");
+  if (ignoreSuggestionButton) {
+    const project = projects.find((item) => item.id === ignoreSuggestionButton.dataset.ignoreSuggestion);
+    if (!project) return;
+    if (!ignoredSuggestions.some((suggestion) => suggestion.projectId === project.id)) {
+      ignoredSuggestions.push({
+        id: crypto.randomUUID(),
+        projectId: project.id,
+        personaId: project.personaId,
+        text: project.next,
+        ignoredAt: new Date().toLocaleString("zh-CN", {
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      });
+      saveToStorage(storageKeys.suggestions, ignoredSuggestions);
+    }
+    renderTodayView();
+    renderRooms();
+  }
+
+  const restoreSuggestionButton = event.target.closest("[data-restore-suggestion]");
+  if (restoreSuggestionButton) {
+    ignoredSuggestions = ignoredSuggestions.filter(
+      (suggestion) => suggestion.projectId !== restoreSuggestionButton.dataset.restoreSuggestion,
+    );
+    saveToStorage(storageKeys.suggestions, ignoredSuggestions);
     renderTodayView();
     renderRooms();
   }

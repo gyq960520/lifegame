@@ -551,15 +551,50 @@ h1 {
 }
 
 .today-candidate {
-  display: grid;
-  gap: 7px;
-  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 9px;
   border-radius: 8px;
   background: var(--soft);
 }
 
 .today-candidate p {
+  min-width: 0;
   color: var(--ink);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.today-candidate span {
+  color: var(--muted);
+  font-size: inherit;
+  font-weight: 700;
+}
+
+.mini-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mini-actions button {
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.mini-actions button:first-child {
+  color: #fff;
+  border-color: var(--leaf);
+  background: var(--leaf);
 }
 
 .project-card {
