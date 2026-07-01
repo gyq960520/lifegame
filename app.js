@@ -148,7 +148,6 @@ const questionList = document.querySelector("#questionList");
 const councilList = document.querySelector("#councilList");
 const npcEchoList = document.querySelector("#npcEchoList");
 const recentEntryList = document.querySelector("#recentEntryList");
-const currentViewLabel = document.querySelector("#currentViewLabel");
 const stageTitle = document.querySelector("#stageTitle");
 const journalStack = document.querySelector("#journalStack");
 const captureForm = document.querySelector("#captureForm");
@@ -247,14 +246,12 @@ function renderProjects() {
   renderLayoutMode();
   if (state.view === "hall") {
     stageTitle.textContent = "大厅";
-    currentViewLabel.textContent = "大厅";
     projectGrid.innerHTML = "";
     projectGrid.hidden = true;
     return;
   }
 
   stageTitle.textContent = "今日事务";
-  currentViewLabel.textContent = selectedPersona ? selectedPersona.name : "今日事务";
 
   if (!selectedPersona) {
     projectGrid.innerHTML = "";
