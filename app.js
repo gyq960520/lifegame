@@ -360,22 +360,24 @@ function renderTodayView() {
   const openQuestions = openEntries.filter((entry) => entry.type === "question");
   const npcInfluences = openEntries.filter((entry) => entry.type === "influence");
   const latestThoughts = openEntries.slice(-3).reverse();
+  const todayItems = openEntries.filter((entry) => entry.type === "task" && entry.bucket === "today");
   const firstFocus = shortProjects[0] ?? activeProjects[0];
+  const firstTodayItem = todayItems[0];
 
   todayView.innerHTML = `
     <section class="affairs-board">
       <div class="room-title">
         <span>${personaName(state.personaId)} 今日事务</span>
-        <strong>${openEntries.length}</strong>
+        <strong>${todayItems.length}</strong>
       </div>
       <div class="affairs-card-grid">
         <article class="today-card">
-          <span>建议下一步</span>
-          <strong>${firstFocus?.name ?? "0 个事项"}</strong>
-          <p>${firstFocus?.next ?? "先往思考之地丢一条真实输入，让系统从你的原话里分流。"}</p>
+          <span>今日事项</span>
+          <strong>${firstTodayItem?.text ?? `${todayItems.length} 个事项`}</strong>
+          <p>${firstTodayItem ? "已进入今天要处理的事项。" : (firstFocus?.next ?? "先往思考之地丢一条真实输入，让系统从你的原话里分流。")}</p>
           ${
-            firstFocus
-              ? `<div class="flow-actions"><button data-create-todo-from-project="${firstFocus.id}">转成待办</button></div>`
+            !firstTodayItem && firstFocus
+              ? `<div class="flow-actions"><button data-create-todo-from-project="${firstFocus.id}">加入今日事项</button></div>`
               : ""
           }
         </article>
@@ -808,9 +810,15 @@ document.addEventListener("click", (event) => {
   if (createTodoButton) {
     const project = projects.find((item) => item.id === createTodoButton.dataset.createTodoFromProject);
     if (!project) return;
+    const existingTodayItem = journalEntries.find(
+      (entry) => entry.bucket === "today" && entry.sourceProjectId === project.id && !entry.processed,
+    );
+    if (existingTodayItem) return;
+
     journalEntries.push({
       id: crypto.randomUUID(),
       type: "task",
+      bucket: "today",
       personaId: project.personaId,
       npcName: "",
       text: project.next,
