@@ -1,0 +1,7 @@
+services:
+  lifegame:
+    build: .
+    container_name: lifegame
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4173:80"
