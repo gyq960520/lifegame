@@ -905,6 +905,20 @@ h1 {
     height: 46px;
   }
 
+  .title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .title-row p {
+    font-size: 14px;
+  }
+
   .today-panel {
     align-items: flex-start;
     flex-direction: column;
@@ -918,10 +932,21 @@ h1 {
   .today-view,
   .project-grid,
   .room-grid,
+  .home-mode .room-grid,
   .persona-signal-grid,
   .affairs-card-grid,
   .project-card-grid {
     grid-template-columns: 1fr;
+  }
+
+  .home-mode .room-panel,
+  .room-panel {
+    min-height: auto;
+  }
+
+  .room-title,
+  .room-item {
+    min-width: 0;
   }
 
   .today-actions,
